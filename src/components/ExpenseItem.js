@@ -1,12 +1,17 @@
 import { AppContext } from "../context/AppContext";
 import { useContext } from "react";
+import{ FiMinusCircle, FiPlusCircle } from "react-icons/fi"
 import { TiDelete } from "react-icons/ti";
 
 export default function ExpenseItem(props) {
   const { currency, dispatch } = useContext(AppContext);
 
   const handleIncrease = () => {
-    dispatch({type: 'ADD_EXPENSE', payload: {department: props.department, increment: 10}})
+    dispatch({type: 'ADD_EXPENSE', payload: {department: props.department, amount: 10}})
+  }
+
+  const handleDecrease = () => {
+    dispatch({type: 'RED_EXPENSE', payload: {department: props.department, amount: 10}})
   }
 
   const handleDelete = () => {
@@ -20,8 +25,9 @@ export default function ExpenseItem(props) {
         {currency}
         {props.budget}
       </td>
-      <td><button onClick={handleIncrease}>+</button></td>
-      <td><TiDelete size="1.5em" onClick={handleDelete}/></td>
+      <td><FiPlusCircle size="1.5em" onClick={handleIncrease}/></td>
+      <td><FiMinusCircle size="1.5em" onClick={handleDecrease}/></td>
+      <td><TiDelete size="2em" onClick={handleDelete}/></td>
     </tr>
   );
 }

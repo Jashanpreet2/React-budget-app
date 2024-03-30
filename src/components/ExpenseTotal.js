@@ -10,7 +10,7 @@ export default function ExpenseTotal() {
   }, 0);
 
   return (
-    <div class={`alert alert-primary`}>
+    <div className={`alert alert-primary`}>
       <span>
         Spend so far: {currency}
         {totalExpenses}

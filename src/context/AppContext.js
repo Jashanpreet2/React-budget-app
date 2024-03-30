@@ -5,19 +5,18 @@ export const AppReducer = (state, action) => {
     let budget = 0;
     switch (action.type) {
         case 'ADD_EXPENSE':
-            let total_budget = 0;
-            total_budget = state.expenses.reduce(
+            let total_allocated = 0;
+            total_allocated = state.expenses.reduce(
                 (previousExp, currentExp) => {
                     return previousExp + currentExp.budget
                 },0
             );
-            total_budget = total_budget + action.payload.increment;
             action.type = "DONE";
-            if(total_budget <= state.budget) {
-                total_budget = 0;
+            if(total_allocated + action.payload.amount <= state.budget) {
+                total_allocated = 0;
                 state.expenses.map((currentExp)=> {
                     if(currentExp.department === action.payload.department) {
-                        currentExp.budget = currentExp.budget + action.payload.increment;
+                        currentExp.budget = currentExp.budget + action.payload.amount;
                     }
                     return currentExp
                 });
@@ -25,16 +24,16 @@ export const AppReducer = (state, action) => {
                     ...state,
                 };
             } else {
-                alert("Cannot increase the allocation! Out of funds");
+                alert("The value cannot exceed remaining funds " + `${state.currency}${state.budget - total_allocated}!`);
                 return {
                     ...state
                 }
             }
             case 'RED_EXPENSE':
                 const red_expenses = state.expenses.map((currentExp)=> {
-                    if (currentExp.department === action.payload.department && currentExp.budget - action.payload.increment >= 0) {
-                        currentExp.budget =  currentExp.budget - action.payload.increment;
-                        budget = state.budget + action.payload.increment
+                    if (currentExp.department === action.payload.department && currentExp.budget - action.payload.amount >= 0) {
+                        currentExp.budget =  currentExp.budget - action.payload.amount;
+                        budget = state.budget + action.payload.amount
                     }
                     return currentExp
                 })
@@ -101,11 +100,10 @@ export const AppProvider = (props) => {
 
     if (state.expenses) {
             const totalExpenses = state.expenses.reduce((total, item) => {
-            return (total = total + item.cost);
+            return (total = total + item.budget);
         }, 0);
         remaining = state.budget - totalExpenses;
     }
-
     return (
         <AppContext.Provider
             value={{
